@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <audio id="audio" src="" loop="false" controls="false" poster="" name="未知音频" author="未知作者" binderror="" bindplay=""
+        bindpause="" bindtimeupdate="" bindended="" autoplay muted="muted">
+
+    </audio>
+
+    <!-- <script src="./base.js"></script> -->
+    <!-- <script src="./jungle.js"></script>
+    <script src="./VoiceChanger.js"></script> -->
+    <!-- <script src="./effect.js"></script> -->
+    <script src="./dist/VoiceChanger.js"></script>
+
+    <script>
+        // new VoiceChanger({
+        //     ready: src => {
+        //         var audio = document.querySelector('#audio');
+
+        //         audio.srcObject = src;
+        //     }
+        // });
+
+        (async function () {
+            var stream = await voiceChanger();
+            var audio = document.querySelector('#audio');
+
+            audio.srcObject = stream;
+        } ())
+    </script>
+</body>
+
+</html>
