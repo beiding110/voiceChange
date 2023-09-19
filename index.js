@@ -50,7 +50,6 @@ function gotStream(stream) {
     // outputMix.connect(audioContext.destination);
 
     crossfade(1.0);
-    changeEffect();
 }
 
 // 交叉混合
@@ -63,7 +62,11 @@ function crossfade(value) {
     wetGain.gain.value = gain2;
 }
 
-function changeEffect() {
+/**
+ * 增加效果
+ * @param {Number} val 变声的控制系数[-1, 1]
+ */
+function changeEffect(val = .7) {
     if (currentEffectNode) {
         currentEffectNode.disconnect();
     }
@@ -76,12 +79,18 @@ function changeEffect() {
     
     effect.output.connect(wetGain);
     currentEffectNode = effect.input;
-    effect.setPitchOffset(.7); // 设置变声系数[-1, 1]，越大越尖锐
+    effect.setPitchOffset(val); // 设置变声系数[-1, 1]，越大越尖锐
 
     audioInput.connect(currentEffectNode);
 }
 
-async function voiceChanger(stream) {
+/**
+ * 获取变声后的数据流
+ * @param {Object} stream 已有的音频数据流，非必要
+ * @param {Number} val 变声控制系数[-1, 1]，非必要
+ * @returns 
+ */
+async function voiceChanger(stream, val) {
     return new Promise((res, reg) => {
         // 音频上下文
         audioContext = new AudioContext();
@@ -91,6 +100,8 @@ async function voiceChanger(stream) {
             _streamOrg = stream;
 
             gotStream(_streamOrg);
+            
+            changeEffect(val);
 
             getNewStream();
 
@@ -98,7 +109,7 @@ async function voiceChanger(stream) {
         } else {
             // 没有音频流，获取麦克风的音频流
             if (!navigator.getUserMedia) {
-                return alert('Error: getUserMedia not supported!');
+                return alert('错误：您的浏览器过于落后，不支持getUserMedia，请使用chrome、edge等现代浏览器');
             }
 
             navigator.getUserMedia({ audio: true }, stream => {
@@ -106,11 +117,13 @@ async function voiceChanger(stream) {
 
                 gotStream(_streamOrg);
 
+                changeEffect(val);
+
                 getNewStream();
 
                 res(_stream);
             }, e => {
-                alert('Error getting audio');
+                alert('错误：获取音频权限失败');
                 console.log(e);
 
                 rej(e);
@@ -119,6 +132,7 @@ async function voiceChanger(stream) {
     })
 }
 
+// 将context转化为stream
 function getNewStream() {
     var destination = audioContext.createMediaStreamDestination(),
         handledStream = destination.stream;

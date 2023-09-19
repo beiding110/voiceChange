@@ -7,6 +7,7 @@ voiceChanger方法，返回一个 [MediaStream](https://developer.mozilla.org/en
 ```javascript
 // 获取到音频流
 var stream = await voiceChanger();
+// var stream = await voiceChanger(null, .5); // 通过第二个参数调整变声程度，默认为.7，范围为[-1, 1]，负数为加粗声音，正数为变细声音
 
 // 获取到音频组件
 var audio = document.querySelector('#audio');
