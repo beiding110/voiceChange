@@ -28,13 +28,37 @@
         //     }
         // });
 
-        (async function () {
-            var stream = await voiceChanger();
-            // var stream = await voiceChanger(null, .5); // 通过第二个参数调整变声程度，默认为.7，范围为[-1, 1]，负数为加粗声音，正数为变细声音
+        // 异步创建流
+        // (async function () {
+        //     var stream = await voiceChanger();
+        //     // var stream = await voiceChanger(null, .5); // 通过第二个参数调整变声程度，默认为.7，范围为[-1, 1]，负数为加粗声音，正数为变细声音
+        //     var audio = document.querySelector('#audio');
+
+        //     audio.srcObject = stream;
+        // } ())
+
+        // promise写法创建流
+        // (function () {
+        //     var audio = document.querySelector('#audio');
+
+        //     voiceChanger().then(stream => {
+        //         audio.srcObject = stream;
+        //     });
+        // } ())
+
+        // 异步形式处理流
+        (function() {
             var audio = document.querySelector('#audio');
 
-            audio.srcObject = stream;
-        } ())
+            navigator.getUserMedia({ audio: true }, stream => {
+                voiceChanger(stream).then(newStream => {
+                    audio.srcObject = newStream;
+                });
+            }, e => {
+                alert('错误：获取音频权限失败');
+                console.log(e);
+            });
+        }())
     </script>
 </body>
 

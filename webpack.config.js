@@ -7,4 +7,5 @@ module.exports = {
         // the name exported to window
         library: 'voiceChanger',
     },
+    devtool: 'source-map',
 };

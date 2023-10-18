@@ -99,13 +99,17 @@ async function voiceChanger(stream, val) {
             // 有音频流，直接使用
             _streamOrg = stream;
 
-            gotStream(_streamOrg);
+            if (_streamOrg.getAudioTracks().length) {
+                gotStream(_streamOrg);
             
-            changeEffect(val);
+                changeEffect(val);
 
-            getNewStream();
+                getNewStream();
 
-            res(_stream);
+                res(_stream);
+            } else {
+                res(_streamOrg);
+            }
         } else {
             // 没有音频流，获取麦克风的音频流
             if (!navigator.getUserMedia) {
